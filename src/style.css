@@ -74,3 +74,8 @@ p {
 .roll-dice:focus {
     outline: none;
 }
+.score{
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 200px;
+}
