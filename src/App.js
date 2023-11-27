@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react"
 import Confetti from "react-confetti"
 import Die from "./Die"
+import tenzie from "./service/tenzies"
 
 
 function App() {
     const [dice, setDice] = useState(allNewDice())
     const [tenzies, setTenzies] = useState(false)
     const [count, setCount] = useState(0)
-    const [topScore, setTopScore] = useState(JSON.parse(localStorage.getItem("top")))
-    
- useEffect(() => {
+    const [scores, setScores] = useState([])
+    const [name, setName] = useState("")
+   
+    useEffect(() => {
+        tenzie.getAll().then(initalTenzies => setScores(initalTenzies))
+    },[])
+
+    useEffect(() => {
         const firstValue = dice[0].value
         const allHeld = dice.every(die => die.held)
         const allSameNumber = dice.every(die => die.value === firstValue)
@@ -18,6 +24,9 @@ function App() {
         }
     }, [dice])
 
+    function handleChange(event){
+        setName(event.target.value)
+    }
     
     function randomDieValue() {
         return Math.ceil(Math.random() * 6)
@@ -47,11 +56,15 @@ function App() {
         } else {
             setDice(allNewDice())
             setTenzies(false)
-            setCount(0)
-            if(count < topScore || topScore === null){
-                setTopScore(count)
-                localStorage.setItem("top", JSON.stringify(count))
+            const scoreObject = {
+                name: name,
+                score: count
             }
+            tenzie
+            .create(scoreObject)
+            .then(returnedScore => setScores(scores.concat(returnedScore)))
+            .then(setCount(0))
+            .then(setName(''))
         }
     }
 
@@ -66,18 +79,26 @@ function App() {
     const diceElements = dice.map(die => 
         <Die key={die.id} {...die} hold={() => holdDice(die.id)} />
     )
+    
+    const sortedScores = scores.sort((a, b) => a.score - b.score)
+    const bestScores = sortedScores.slice(0, 3)
 
     return (
+        <>
         <main>
             {tenzies && <Confetti />}
             <h1>Tenzies</h1>
+            <p>Name: <input type="text" value={name} onChange={handleChange}></input></p>
             <p>Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
             <div className="die-container">{diceElements}</div>
-            <div className="score"><p>Top Score(least rolls): {topScore}</p> <p>Your number of rolls: {count}</p></div>
+            <p>Your number of rolls: {count}</p>
             <button className="roll-dice" onClick={rollUnheldDice}>
                 {tenzies ? "Reset Game" : "Roll"}
             </button>
         </main>
+        <p className="scores">Top Scores(least rolls): {bestScores.map(score => <p>{score.name} : {score.score}</p> )}</p> 
+        </>
+        
     )
 }
 
