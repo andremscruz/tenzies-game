@@ -96,7 +96,7 @@ function App() {
                 {tenzies ? "Reset Game" : "Roll"}
             </button>
         </main>
-        <p className="scores">Top Scores(least rolls): {bestScores.map(score => <p>{score.name} : {score.score}</p> )}</p> 
+        <p className="scores">Top Scores(least rolls): {bestScores.map((score, i) => <p>{i+1}°: {score.name} - {score.score}</p> )}</p> 
         </>
         
     )
