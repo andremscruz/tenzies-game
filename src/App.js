@@ -14,7 +14,7 @@ function App() {
     const [alert, setAlert] = useState("")
     const [start, setStart] = useState(false)
     const [chronometer, setChronometer] = useState(0);
-    const [chronometerInterval, setChronometerInterval] = useState(null)
+    const [chronometerInterval, setChronometerInterval] = useState(0)
 
     function play(){
         const audio = new Audio(sound)
@@ -33,10 +33,8 @@ function App() {
         if (allHeld && allSameNumber) {
           setTenzies(true)
           clearInterval(chronometerInterval) 
-        } else if (
-          chronometerInterval === null &&
-          dice.some((die) => die.held)
-        ) {
+        } 
+        else if (chronometerInterval === 0 && dice.some((die) => die.held)) {
           const intervalId = setInterval(
             () => setChronometer((prev) => prev + 0.01),
             10
@@ -88,8 +86,8 @@ function App() {
             setTenzies(false)
             const scoreObject = {
                 name: name,
-                time: chronometer,
-                score: count
+                score: count,
+                chronometer: chronometer
                 
             }
             tenzie
@@ -120,8 +118,11 @@ function App() {
     const formatTime = (time) => {
         const seconds = Math.floor(time)
         const milliseconds = Math.floor((time - seconds) * 1000)
-        return `${seconds}s ${milliseconds}ms`
+        return `${seconds}.${milliseconds}s`
     }
+
+    const sortedTimes = scores.sort((a, b) => a.chronometer - b.chronometer)
+    const bestTimes = sortedTimes.slice(0, 3)
 
     return (
         <>
@@ -145,9 +146,18 @@ function App() {
                         {tenzies ? "Reset Game" : "Roll"}
                     </button>
                 </main>
-                <div>
-                    <h4 className="scores">Top Scores(least rolls): {bestScores.map((score, i) => 
-                    <p key={score.id}>{i+1}°: {score.name} - {score.score}</p> )}</h4> 
+                <h4 style={{color: 'white'}}>Top Scores:</h4>
+                <div className="scores">
+                    <div>
+                        <h5>Least rolls: {bestScores.map((score, i) => 
+                        <p key={score.id}>{i+1}°: {score.name} - {score.score}</p>)}</h5> 
+                    </div>
+                    <div>
+                        <h5>Less time: {bestTimes.map((time, i) =>
+                        <p key={time.id}>{i+1}°: {time.name} - {formatTime(time.chronometer)}</p>)}</h5>
+                    </div>
+                    
+                    
                     
                 </div>
                 
