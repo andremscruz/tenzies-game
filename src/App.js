@@ -13,26 +13,37 @@ function App() {
     const [name, setName] = useState("")
     const [alert, setAlert] = useState("")
     const [start, setStart] = useState(false)
-
+    const [chronometer, setChronometer] = useState(0);
+    const [chronometerInterval, setChronometerInterval] = useState(null)
 
     function play(){
         const audio = new Audio(sound)
         audio.currentTime = 3
         audio.play()
     }
+    useEffect(() => {
+        tenzie.getAll().then(initialTenzies => setScores(initialTenzies))
+    }, [])
     
     useEffect(() => {
-        tenzie.getAll().then(initalTenzies => setScores(initalTenzies))
-    },[])
-
-    useEffect(() => {
-        const firstValue = dice[0].value
-        const allHeld = dice.every(die => die.held)
-        const allSameNumber = dice.every(die => die.value === firstValue)
-        if(allHeld && allSameNumber) {
-            setTenzies(true)
+        const firstValue = dice[0].value;
+        const allHeld = dice.every((die) => die.held);
+        const allSameNumber = dice.every((die) => die.value === firstValue)
+    
+        if (allHeld && allSameNumber) {
+          setTenzies(true)
+          clearInterval(chronometerInterval) 
+        } else if (
+          chronometerInterval === null &&
+          dice.some((die) => die.held)
+        ) {
+          const intervalId = setInterval(
+            () => setChronometer((prev) => prev + 0.01),
+            10
+          )
+          setChronometerInterval(intervalId)
         }
-    }, [dice])
+      }, [dice, chronometerInterval])
 
     function handleClick(){
         setStart(prevStart => !prevStart)
@@ -77,7 +88,8 @@ function App() {
             setTenzies(false)
             const scoreObject = {
                 name: name,
-                score: count
+                score: count,
+                time: chronometer
             }
             tenzie
             .create(scoreObject)
@@ -85,6 +97,7 @@ function App() {
             .then(setCount(0))
             .then(setName(''))
             .then(setAlert(''))
+            .then(setChronometer(0))
         }
     }
 
@@ -103,6 +116,12 @@ function App() {
     const sortedScores = scores.sort((a, b) => a.score - b.score)
     const bestScores = sortedScores.slice(0, 3)
 
+    const formatTime = (time) => {
+        const seconds = Math.floor(time)
+        const milliseconds = Math.floor((time - seconds) * 1000)
+        return `${seconds}s ${milliseconds}ms`
+    }
+
     return (
         <>
             {
@@ -115,12 +134,22 @@ function App() {
                     <p style = {{color: "red"}}>{alert}</p>
                     <p>Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
                     <div className="die-container">{diceElements}</div>
-                    <p>Your number of rolls: {count}</p>
+                    <div>
+                        <p>Time: {formatTime(chronometer)}</p>
+                        <p>Your number of rolls: {count}</p>
+
+                    </div>
+                    
                     <button className="roll-dice" onClick={rollUnheldDice}>
                         {tenzies ? "Reset Game" : "Roll"}
                     </button>
                 </main>
-                <h4 className="scores">Top Scores(least rolls): {bestScores.map((score, i) => <p key={score.id}>{i+1}°: {score.name} - {score.score}</p> )}</h4> 
+                <div>
+                    <h4 className="scores">Top Scores(least rolls): {bestScores.map((score, i) => 
+                    <p key={score.id}>{i+1}°: {score.name} - {score.score}</p> )}</h4> 
+                    
+                </div>
+                
                 </div>
                 :
                 <div className="div-play">
