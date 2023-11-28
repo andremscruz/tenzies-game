@@ -88,8 +88,9 @@ function App() {
             setTenzies(false)
             const scoreObject = {
                 name: name,
-                score: count,
-                time: chronometer
+                time: chronometer,
+                score: count
+                
             }
             tenzie
             .create(scoreObject)
