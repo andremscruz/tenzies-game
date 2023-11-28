@@ -68,7 +68,6 @@ function App() {
                     { value: randomDieValue(), held: false, id: i + 1 }
             ))
             setCount(prevCount => prevCount + 1)
-            play()
         } 
         else if(name.length === 0 ){
             setAlert("Please enter your name")
