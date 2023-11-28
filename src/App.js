@@ -112,7 +112,7 @@ function App() {
                 <main>
                     {tenzies && <Confetti />}
                     <h1>Tenzies</h1>
-                    <p>Name: <input type="text" value={name} onChange={handleChange}></input></p>
+                    <p><input placeholder="Please enter your name" type="text" value={name} onChange={handleChange}></input></p>
                     <p style = {{color: "red"}}>{alert}</p>
                     <p>Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
                     <div className="die-container">{diceElements}</div>
