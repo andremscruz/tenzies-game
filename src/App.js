@@ -13,7 +13,7 @@ function App() {
     const [name, setName] = useState("")
     const [alert, setAlert] = useState("")
     const [start, setStart] = useState(false)
-    const [chronometer, setChronometer] = useState(0);
+    const [chronometer, setChronometer] = useState(0)
     const [chronometerInterval, setChronometerInterval] = useState(0)
 
     function play(){
@@ -26,8 +26,8 @@ function App() {
     }, [])
     
     useEffect(() => {
-        const firstValue = dice[0].value;
-        const allHeld = dice.every((die) => die.held);
+        const firstValue = dice[0].value
+        const allHeld = dice.every((die) => die.held)
         const allSameNumber = dice.every((die) => die.value === firstValue)
     
         if (allHeld && allSameNumber) {
