@@ -97,6 +97,7 @@ function App() {
             .then(setName(''))
             .then(setAlert(''))
             .then(setChronometer(0))
+            .then(document.location.reload(true))
         }
     }
 
