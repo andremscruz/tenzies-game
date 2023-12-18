@@ -22,7 +22,15 @@ function App() {
         audio.play()
     }
     useEffect(() => {
-        tenzie.getAll().then(initialTenzies => setScores(initialTenzies))
+        const fetchData = async () => {
+            try {
+                const initialTenzies = await tenzie.getAll()
+                setScores(initialTenzies)
+            } catch (error) {
+                console.error('Error fetching data:', error)
+            }
+        }
+        fetchData()
     }, [])
     
     useEffect(() => {
