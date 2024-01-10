@@ -127,7 +127,7 @@ function App() {
     const formatTime = (time) => {
         const seconds = Math.floor(time)
         const milliseconds = Math.floor((time - seconds) * 1000)
-        return `${seconds}.${milliseconds}s`
+        return `${seconds}.${milliseconds}`
     }
 
     const sortedTimes = scores.sort((a, b) => a.chronometer - b.chronometer)
@@ -145,25 +145,23 @@ function App() {
                     <p style = {{color: "red"}}>{alert}</p>
                     <p>Roll until all dice are the same. Click each die to freeze it at its current value between rolls.</p>
                     <div className="die-container">{diceElements}</div>
-                    <div>
-                        <p>Time: {formatTime(chronometer)}</p>
-                        <p>Your number of rolls: {count}</p>
-
-                    </div>
-                    
                     <button className="roll-dice" onClick={rollUnheldDice}>
                         {tenzies ? "Reset Game" : "Roll"}
                     </button>
+                    <div>
+                        <p >Time: <label className="time">{formatTime(chronometer)}</label> s</p>
+                        <p >Your number of rolls: <label className="rolls">{count}</label></p>
+                    </div>
                 </main>
                 <h4 style={{color: 'white'}}>Top Scores:</h4>
                 <div className="scores">
                     <div>
                         <h5>Least rolls: {bestScores.map((score, i) => 
-                        <p key={score.id}>{i+1}°: {score.name} - {score.score}</p>)}</h5> 
+                        <p key={score.id}>{i+1}°: {score.name} - <label className="rolls-b">{score.score}</label></p>)}</h5> 
                     </div>
                     <div>
                         <h5>Less time: {bestTimes.map((time, i) =>
-                        <p key={time.id}>{i+1}°: {time.name} - {formatTime(time.chronometer)}</p>)}</h5>
+                        <p key={time.id}>{i+1}°: {time.name} - <label className="time-b">{formatTime(time.chronometer)}</label></p>)}</h5>
                     </div>
                     
                     
